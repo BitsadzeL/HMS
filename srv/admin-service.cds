@@ -4,4 +4,6 @@ service AdminService {
   entity Hotels   as projection on hms.Hotels;
   entity Managers as projection on hms.Managers;
   entity Rooms as projection on hms.Rooms;
+  entity Guests       as projection on hms.Guests;
+  entity Reservations as projection on hms.Reservations;
 }
