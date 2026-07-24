@@ -5,5 +5,7 @@ service GuestService {
   @readonly entity Rooms  as projection on db.Rooms;
 
   entity Guests       as projection on db.Guests;
-  entity Reservations as projection on db.Reservations;
+  entity Reservations as projection on db.Reservations actions{
+      action cancel();
+    };
 }
