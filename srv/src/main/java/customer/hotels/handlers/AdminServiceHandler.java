@@ -1,10 +1,16 @@
 package customer.hotels.handlers;
 
 import cds.gen.adminservice.AdminService_;
+import cds.gen.adminservice.Hotels_;
 import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import cds.gen.hms.Rooms;
+import cds.gen.hms.Rooms_;
+import cds.gen.hms.Reservations_;
+import cds.gen.hms.Hotels;
+
 import com.sap.cds.ql.Select;
 import com.sap.cds.services.ErrorStatuses;
 import com.sap.cds.services.ServiceException;
@@ -14,12 +20,6 @@ import com.sap.cds.services.handler.EventHandler;
 import com.sap.cds.services.handler.annotations.Before;
 import com.sap.cds.services.handler.annotations.ServiceName;
 import com.sap.cds.services.persistence.PersistenceService;
-
-import cds.gen.hms.Hotels;
-import cds.gen.hms.Hotels_;
-import cds.gen.hms.Reservations_;
-import cds.gen.hms.Rooms_;
-
 
 @Component
 @ServiceName(AdminService_.CDS_NAME)
@@ -32,22 +32,15 @@ public class AdminServiceHandler implements EventHandler {
     }
 
 
-
-    // Rule: Delete hotel only if it has no rooms and no active reservations
-    @Before(event = CqnService.EVENT_DELETE, entity = AdminService_.CDS_NAME)
+    @Before(event = CqnService.EVENT_DELETE, entity = Hotels_.CDS_NAME)
     public void beforeDeleteHotel(CdsDeleteEventContext context) {
-
-
 
         Hotels hotel = db.run(Select.from(context.getCqn().ref()))
                 .listOf(Hotels.class)
                 .stream().findFirst().orElse(null);
 
-        if (hotel == null) {
-            return;
-        }
+        if (hotel == null) return;
 
-        // Get all room IDs belonging to this hotel
         List<String> roomIds = db.run(
                         Select.from(Rooms_.class)
                                 .columns(r -> r.ID())
@@ -57,10 +50,7 @@ public class AdminServiceHandler implements EventHandler {
                 .map(Rooms::getId)
                 .collect(Collectors.toList());
 
-        if (!roomIds.isEmpty()) {
-            throw new ServiceException(ErrorStatuses.CONFLICT,
-                    "Cannot delete hotel: it still has rooms assigned.");
-        }
+        if (roomIds.isEmpty()) return; // no rooms — safe to delete
 
         long activeReservationCount = db.run(
                         Select.from(Reservations_.class)
@@ -72,5 +62,8 @@ public class AdminServiceHandler implements EventHandler {
             throw new ServiceException(ErrorStatuses.CONFLICT,
                     "Cannot delete hotel: it has active reservations.");
         }
+
+        throw new ServiceException(ErrorStatuses.CONFLICT,
+                "Cannot delete hotel: it still has rooms assigned.");
     }
 }
