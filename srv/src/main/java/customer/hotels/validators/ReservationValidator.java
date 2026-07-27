@@ -1,5 +1,6 @@
 package customer.hotels.validators;
 
+import cds.gen.hms.ReservationStatus;
 import cds.gen.hms.Reservations;
 
 import customer.hotels.dao.ReservationsDAO;
@@ -53,8 +54,8 @@ public class ReservationValidator {
     }
 
 
-    public void assertOnlyDatesChanged(Reservations res) {
-        if (res.getRoomId() != null || res.getGuestId() != null || res.getStatus() != null) {
+    public void assertOnlyDatesChanged(String roomId, String guestId, String status) {
+        if (roomId != null || guestId != null || status != null) {
             throw new ServiceException(ErrorStatuses.BAD_REQUEST,
                     "Only checkIn and checkOut can be updated.");
         }
@@ -67,8 +68,8 @@ public class ReservationValidator {
     }
 
 
-    public void assertActive(Reservations res) {
-        if (!cds.gen.hms.ReservationStatus.ACTIVE.equals(res.getStatus())) {
+    public void assertActive(String status) {
+        if (!ReservationStatus.ACTIVE.equals(status)) {
             throw new ServiceException(ErrorStatuses.CONFLICT,
                     "Only active reservations can be cancelled.");
         }
