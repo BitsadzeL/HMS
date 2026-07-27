@@ -4,191 +4,91 @@ import cds.gen.guestservice.GuestService_;
 import cds.gen.guestservice.Guests;
 import cds.gen.guestservice.Guests_;
 import cds.gen.guestservice.Reservations;
+import cds.gen.guestservice.ReservationsCancelContext;
 import cds.gen.guestservice.Reservations_;
 
-import cds.gen.hms.Rooms;
-import cds.gen.hms.Rooms_;
+import cds.gen.hms.ReservationStatus;
+
+import customer.hotels.dao.ReservationsDAO;
+import customer.hotels.validators.GuestValidator;
+import customer.hotels.validators.ReservationValidator;
+import customer.hotels.validators.RoomValidator;
 
 import com.sap.cds.ql.Select;
-import com.sap.cds.ql.Update;
 import com.sap.cds.services.ErrorStatuses;
 import com.sap.cds.services.ServiceException;
 import com.sap.cds.services.cds.CdsDeleteEventContext;
 import com.sap.cds.services.cds.CqnService;
 import com.sap.cds.services.handler.EventHandler;
-import com.sap.cds.services.handler.annotations.After;
 import com.sap.cds.services.handler.annotations.Before;
+import com.sap.cds.services.handler.annotations.On;
 import com.sap.cds.services.handler.annotations.ServiceName;
 import com.sap.cds.services.persistence.PersistenceService;
-import cds.gen.guestservice.ReservationsCancelContext;
-import cds.gen.hms.ReservationStatus;
+
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
 import java.util.List;
-import com.sap.cds.services.handler.annotations.On;
 @Component
 @ServiceName(GuestService_.CDS_NAME)
+@RequiredArgsConstructor
 public class GuestServiceHandler implements EventHandler {
 
     private final PersistenceService db;
+    private final GuestValidator guestValidator;
+    private final ReservationValidator reservationValidator;
+    private final RoomValidator roomValidator;
+    private final ReservationsDAO reservationsDAO;
 
-    public GuestServiceHandler(PersistenceService db) {
-        this.db = db;
-    }
-
-    // Rule: Delete guest only if they have no active reservations
     @Before(event = CqnService.EVENT_DELETE, entity = Guests_.CDS_NAME)
     public void beforeDeleteGuest(CdsDeleteEventContext context) {
-
         Guests guest = db.run(Select.from(context.getCqn().ref()))
                 .listOf(Guests.class)
                 .stream().findFirst().orElse(null);
 
-        if (guest == null) return;
-
-        long activeReservationCount = db.run(
-                        Select.from(Reservations_.class)
-                                .where(r -> r.guest_ID().eq(guest.getId())
-                                        .and(r.status().eq(ReservationStatus.ACTIVE))))
-                .rowCount();
-
-        if (activeReservationCount > 0) {
-            throw new ServiceException(ErrorStatuses.CONFLICT,
-                    "Cannot delete guest: they have active reservations.");
+        if (guest != null) {
+            guestValidator.assertDeletable(guest.getId());
         }
     }
 
-    // Rule: validate reservation dates + room availability on creation
     @Before(event = CqnService.EVENT_CREATE, entity = Reservations_.CDS_NAME)
     public void beforeCreateReservation(List<Reservations> reservations) {
-
         for (Reservations res : reservations) {
+            reservationValidator.assertValidDates(res.getCheckIn(), res.getCheckOut());
 
-            LocalDate checkIn = res.getCheckIn();
-            LocalDate checkOut = res.getCheckOut();
-            String roomId = res.getRoomId();
+            var room = roomValidator.requireRoom(res.getRoomId());
+            roomValidator.assertNotBlocked(room);
 
-            if (checkIn == null || checkOut == null || roomId == null) {
-                throw new ServiceException(ErrorStatuses.BAD_REQUEST,
-                        "room, checkIn and checkOut are required.");
-            }
-
-            if (!checkIn.isAfter(LocalDate.now())) {
-                throw new ServiceException(ErrorStatuses.BAD_REQUEST,
-                        "Check-in date must be in the future.");
-            }
-
-            if (!checkOut.isAfter(checkIn)) {
-                throw new ServiceException(ErrorStatuses.BAD_REQUEST,
-                        "Check-out date must be later than check-in date.");
-            }
-
-            Rooms room = db.run(Select.from(Rooms_.class)
-                            .where(r -> r.ID().eq(roomId)))
-                    .listOf(Rooms.class)
-                    .stream().findFirst().orElse(null);
-
-            if (room == null) {
-                throw new ServiceException(ErrorStatuses.NOT_FOUND,
-                        "Room not found.");
-            }
-
-            if (Boolean.FALSE.equals(room.getAvailable())) {
-                throw new ServiceException(ErrorStatuses.CONFLICT,
-                        "Room is currently blocked by hotel management.");
-            }
-
-            List<Reservations> overlapping = db.run(Select.from(Reservations_.class)
-                            .where(r -> r.room_ID().eq(roomId)
-                                    .and(r.status().eq(ReservationStatus.ACTIVE))))
-                    .listOf(Reservations.class);
-
-            for (Reservations other : overlapping) {
-                boolean overlaps = checkIn.isBefore(other.getCheckOut())
-                        && checkOut.isAfter(other.getCheckIn());
-                if (overlaps) {
-                    throw new ServiceException(ErrorStatuses.CONFLICT,
-                            "Room is already booked for the requested dates.");
-                }
-            }
+            reservationValidator.assertNoOverlap(res.getRoomId(), res.getCheckIn(), res.getCheckOut(), null);
         }
     }
-
 
     @Before(event = CqnService.EVENT_UPDATE, entity = Reservations_.CDS_NAME)
     public void beforeUpdateReservation(List<Reservations> reservations) {
-
         for (Reservations res : reservations) {
+            reservationValidator.assertOnlyDatesChanged(res.getRoomId(), res.getGuestId(), res.getStatus());
 
-            String reservationId = res.getId();
-
-            // Reject changes to anything except checkIn/checkOut
-            if (res.getRoomId() != null || res.getGuestId() != null || res.getStatus() != null) {
-                throw new ServiceException(ErrorStatuses.BAD_REQUEST,
-                        "Only checkIn and checkOut can be updated.");
-            }
-
-            Reservations existing = db.run(Select.from(Reservations_.class)
-                            .where(r -> r.ID().eq(reservationId)))
-                    .listOf(Reservations.class)
-                    .stream().findFirst().orElse(null);
-
+            cds.gen.hms.Reservations existing = reservationsDAO.findById(res.getId()).orElse(null);
             if (existing == null) continue;
 
-            LocalDate newCheckIn = res.getCheckIn() != null ? res.getCheckIn() : existing.getCheckIn();
-            LocalDate newCheckOut = res.getCheckOut() != null ? res.getCheckOut() : existing.getCheckOut();
+            var newCheckIn = res.getCheckIn() != null ? res.getCheckIn() : existing.getCheckIn();
+            var newCheckOut = res.getCheckOut() != null ? res.getCheckOut() : existing.getCheckOut();
 
-            if (!newCheckIn.isAfter(LocalDate.now())) {
-                throw new ServiceException(ErrorStatuses.BAD_REQUEST,
-                        "Check-in date must be in the future.");
-            }
-
-            if (!newCheckOut.isAfter(newCheckIn)) {
-                throw new ServiceException(ErrorStatuses.BAD_REQUEST,
-                        "Check-out date must be later than check-in date.");
-            }
-
-            String roomId = existing.getRoomId();
-
-            List<Reservations> overlapping = db.run(Select.from(Reservations_.class)
-                            .where(r -> r.room_ID().eq(roomId)
-                                    .and(r.status().eq(ReservationStatus.ACTIVE))
-                                    .and(r.ID().ne(reservationId))))
-                    .listOf(Reservations.class);
-
-            for (Reservations other : overlapping) {
-                boolean overlaps = newCheckIn.isBefore(other.getCheckOut())
-                        && newCheckOut.isAfter(other.getCheckIn());
-                if (overlaps) {
-                    throw new ServiceException(ErrorStatuses.CONFLICT,
-                            "New dates overlap with an existing reservation for this room.");
-                }
-            }
+            reservationValidator.assertValidDates(newCheckIn, newCheckOut);
+            reservationValidator.assertNoOverlap(existing.getRoomId(), newCheckIn, newCheckOut, res.getId());
         }
     }
-
 
     @On(event = ReservationsCancelContext.CDS_NAME)
     public void onCancelReservation(ReservationsCancelContext context) {
-
         Reservations res = db.run(Select.from(context.getCqn().ref()))
                 .listOf(Reservations.class)
-                .stream().findFirst().orElse(null);
+                .stream().findFirst()
+                .orElseThrow(() -> new ServiceException(ErrorStatuses.NOT_FOUND, "Reservation not found."));
 
-        if (res == null) {
-            throw new ServiceException(ErrorStatuses.NOT_FOUND, "Reservation not found.");
-        }
-
-        if (!ReservationStatus.ACTIVE.equals(res.getStatus())) {
-            throw new ServiceException(ErrorStatuses.CONFLICT, "Only active reservations can be cancelled.");
-        }
-
-        db.run(Update.entity(Reservations_.class)
-                .data("status", ReservationStatus.CANCELLED)
-                .where(r -> r.ID().eq(res.getId())));
+        reservationValidator.assertActive(res.getStatus());
+        reservationsDAO.updateStatus(res.getId(), ReservationStatus.CANCELLED);
 
         context.setCompleted();
     }
-
 }
