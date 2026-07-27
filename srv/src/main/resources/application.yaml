@@ -1,7 +1,22 @@
-
----
 spring:
-  config.activate.on-profile: default
-  sql.init.platform: h2
+  web.resources.static-locations: "file:./app"
 cds:
-  data-source.auto-config.enabled: false
+  odata-v4.endpoint.path: "/odata/v4"
+  security:
+    authentication:
+      authenticate-unknown-endpoints: false
+    mock:
+      enabled: true
+      users:
+        - name: admin
+          password: admin
+          roles:
+            - admin_access
+        - name: manager
+          password: manager
+          roles:
+            - manager_access
+        - name: guest
+          password: guest
+          roles:
+            - guest_access

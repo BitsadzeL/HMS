@@ -1,0 +1,11 @@
+spring:
+  h2:
+    console:
+      enabled: true
+  sql:
+    init:
+      mode: always
+      schema-locations: "classpath:schema-h2.sql"
+cds:
+  datasource:
+    auto-config.enabled: false

@@ -1,0 +1,45 @@
+{
+  "xsappname": "hotel-management",
+  "tenant-mode": "dedicated",
+  "oauth2-configuration": {
+    "redirect-uris": [
+      "https://*.cfapps.us10-001.hana.ondemand.com/**"
+    ]
+  },
+  "scopes": [
+    { "name": "$XSAPPNAME.admin_access",   "description": "Full administrative access" },
+    { "name": "$XSAPPNAME.manager_access", "description": "Hotel manager access" },
+    { "name": "$XSAPPNAME.guest_access",   "description": "Guest access" }
+  ],
+  "role-templates": [
+    {
+      "name": "Admin",
+      "description": "System administrator",
+      "scope-references": [ "$XSAPPNAME.admin_access" ]
+    },
+    {
+      "name": "Manager",
+      "description": "Hotel manager",
+      "scope-references": [ "$XSAPPNAME.manager_access" ]
+    },
+    {
+      "name": "Guest",
+      "description": "Guest",
+      "scope-references": [ "$XSAPPNAME.guest_access" ]
+    }
+  ],
+  "role-collections": [
+    {
+      "name": "HMS_Admin",
+      "role-template-references": [ "$XSAPPNAME.Admin" ]
+    },
+    {
+      "name": "HMS_Manager",
+      "role-template-references": [ "$XSAPPNAME.Manager" ]
+    },
+    {
+      "name": "HMS_Guest",
+      "role-template-references": [ "$XSAPPNAME.Guest" ]
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+cds:
+  datasource:
+    auto-config.enabled: true
+  security:
+    mock:
+      enabled: false
