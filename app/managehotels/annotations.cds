@@ -1,8 +1,5 @@
 using AdminService as service from '../../srv/admin-service';
 
-annotate AdminService.Hotels with @fiori.draft.enabled;
-annotate AdminService.Hotels with @odata.draft.enabled;
-
 
 annotate service.Hotels with @(
     UI.FieldGroup #GeneratedGroup : {
@@ -42,6 +39,14 @@ annotate service.Hotels with @(
             Label : 'General Information',
             Target : '@UI.FieldGroup#GeneratedGroup',
         },
+
+        {
+            $Type : 'UI.ReferenceFacet',
+            ID : 'Rooms',
+            Label : 'Rooms',
+            Target : 'rooms/@UI.LineItem',
+        },
+
     ],
     UI.LineItem : [
         {

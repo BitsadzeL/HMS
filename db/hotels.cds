@@ -5,6 +5,7 @@ using { cuid, managed } from '@sap/cds/common';
 using { hms.Rooms } from './rooms';
 using { hms.Managers } from './managers';
 
+@cds.odata.valuelist
 entity Hotels : cuid, managed {
   name     : String(100) @mandatory;
   address  : String(200);
