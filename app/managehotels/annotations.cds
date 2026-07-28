@@ -47,6 +47,13 @@ annotate service.Hotels with @(
             Target : 'rooms/@UI.LineItem',
         },
 
+        {
+            $Type : 'UI.ReferenceFacet',
+            ID : 'Managers',
+            Label : 'Managers',
+            Target : 'managers/@UI.LineItem',
+        },
+
     ],
     UI.LineItem : [
         {
