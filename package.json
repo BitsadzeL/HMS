@@ -14,6 +14,7 @@
     "app/adminhotels",
     "app/adminrooms",
     "app/adminmanagers",
-    "app/adminreservations"
+    "app/adminreservations",
+    "app/managerhotel"
   ]
 }

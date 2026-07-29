@@ -8,3 +8,5 @@ using from './adminrooms/annotations';
 using from './adminmanagers/annotations';
 
 using from './adminreservations/annotations';
+
+using from './managerhotel/annotations';
