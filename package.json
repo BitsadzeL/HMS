@@ -9,6 +9,11 @@
     "app/managerooms",
     "app/managemanagers",
     "app/manageguests",
-    "app/managereservations"
+    "app/managereservations",
+    "app/adminguests",
+    "app/adminhotels",
+    "app/adminrooms",
+    "app/adminmanagers",
+    "app/adminreservations"
   ]
 }
