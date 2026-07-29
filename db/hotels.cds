@@ -13,5 +13,5 @@ entity Hotels : cuid, managed {
   city     : String(60);
   rating   : Integer @assert.range: [1,5];
   managers : Association to many Managers on managers.hotel = $self;
-  rooms    : Composition of many Rooms on rooms.hotel = $self;
+  rooms    : Association to  many Rooms on rooms.hotel = $self;
 }

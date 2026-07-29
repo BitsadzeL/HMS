@@ -4,6 +4,7 @@ cds:
   odata-v4.endpoint.path: "/odata/v4"
   security:
     authentication:
+      mode: never
       authenticate-unknown-endpoints: false
     mock:
       enabled: true

@@ -2,6 +2,7 @@ namespace hms;
 
 using { cuid, managed } from '@sap/cds/common';
 using { hms.Reservations } from './reservations';
+@cds.odata.valuelist
 entity Guests : cuid, managed {
   firstName      : String(60);
   lastName       : String(60);

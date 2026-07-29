@@ -7,6 +7,8 @@
   "sapux": [
     "app/managehotels",
     "app/managerooms",
-    "app/managemanagers"
+    "app/managemanagers",
+    "app/manageguests",
+    "app/managereservations"
   ]
 }
