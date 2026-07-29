@@ -4,6 +4,7 @@ namespace hms;
 using { cuid, managed } from '@sap/cds/common';
 using { hms.Rooms } from './rooms';
 using { hms.Managers } from './managers';
+using { hms.Reservations } from './reservations';
 
 @cds.odata.valuelist
 entity Hotels : cuid, managed {

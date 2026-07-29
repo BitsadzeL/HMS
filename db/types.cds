@@ -20,6 +20,6 @@ entity ReservationStatuses : CodeList {
 
 
 type Price {
-  amount   : Decimal(9,2) @assert.range: [0.01,];
+  amount   : Decimal(9,2) @assert.range: [0.01,] ;
   currency : Currency;
 }

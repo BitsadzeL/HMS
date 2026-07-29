@@ -1,5 +1,11 @@
 using AdminService as service from '../../srv/admin-service';
 annotate service.Hotels with @(
+    UI.HeaderInfo : {
+      TypeName       : 'Hotel',
+      TypeNamePlural : 'Hotels',
+      Title          : { Value: name },
+      Description    : { Value: city }
+    },
     UI.FieldGroup #GeneratedGroup : {
         $Type : 'UI.FieldGroupType',
         Data : [
@@ -36,6 +42,17 @@ annotate service.Hotels with @(
             ID : 'GeneratedFacet1',
             Label : 'General Information',
             Target : '@UI.FieldGroup#GeneratedGroup',
+        },
+        {
+          $Type : 'UI.ReferenceFacet',
+          ID    : 'RoomsFacet',
+          Label : 'Rooms',
+          Target: 'rooms/@UI.LineItem',
+        },        {
+          $Type : 'UI.ReferenceFacet',
+          ID    : 'ManagersFacet',
+          Label : 'Managers',
+          Target: 'managers/@UI.LineItem',
         },
     ],
     UI.LineItem : [

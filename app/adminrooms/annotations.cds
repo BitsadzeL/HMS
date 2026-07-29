@@ -37,6 +37,12 @@ annotate service.Rooms with @(
             Label : 'General Information',
             Target : '@UI.FieldGroup#GeneratedGroup',
         },
+        {
+          $Type : 'UI.ReferenceFacet',
+          ID    : 'ReservationsFacet',
+          Label : 'Reservations',
+          Target: 'reservations/@UI.LineItem',
+        },
     ],
     UI.LineItem : [
         {

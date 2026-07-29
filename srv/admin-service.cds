@@ -32,3 +32,43 @@ annotate AdminService.Reservations with {
     }
   );
 };
+
+
+annotate AdminService.Hotels with @(
+  Capabilities.NavigationRestrictions : {
+    RestrictedProperties : [
+      {
+        NavigationProperty : rooms,
+        InsertRestrictions : { Insertable : false }
+      }
+    ]
+  }
+);
+
+
+annotate AdminService.Hotels with @(
+  Capabilities.NavigationRestrictions : {
+    RestrictedProperties : [
+      {
+        NavigationProperty : rooms,
+        InsertRestrictions : { Insertable : false }
+      },
+      {
+        NavigationProperty : managers,
+        InsertRestrictions : { Insertable : false }
+      }
+    ]
+  }
+);
+
+
+annotate AdminService.Rooms with @(
+  Capabilities.NavigationRestrictions : {
+    RestrictedProperties : [
+      {
+        NavigationProperty : reservations,
+        InsertRestrictions : { Insertable : false }
+      }
+    ]
+  }
+);
