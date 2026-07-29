@@ -15,4 +15,20 @@ service AdminService {
 
   @odata.draft.enabled
   entity Reservations as projection on hms.Reservations;
+
+  @readonly
+  entity ReservationStatuses as projection on hms.ReservationStatuses;
 }
+
+
+annotate AdminService.Reservations with {
+  status @(
+    Common.ValueListWithFixedValues,
+    Common.ValueList : {
+      CollectionPath : 'ReservationStatuses',
+      Parameters : [
+        { $Type: 'Common.ValueListParameterInOut', LocalDataProperty: status, ValueListProperty: 'code' }
+      ]
+    }
+  );
+};

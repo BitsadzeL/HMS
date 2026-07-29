@@ -1,0 +1,4 @@
+code,name,descr
+active,Active,Reservation is currently active
+completed,Completed,Reservation has been completed
+cancelled,Cancelled,Reservation has been cancelled
