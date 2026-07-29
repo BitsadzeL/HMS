@@ -1,0 +1,31 @@
+{
+  "generationParameters": {
+    "generationDate": "Wed Jul 29 2026 16:51:24 GMT+0400 (Georgia Standard Time)",
+    "generatorPlatform": "CLI",
+    "serviceType": "Local CAP",
+    "metadataFilename": "",
+    "serviceUrl": "http://localhost:4004/odata/v4/ManagerService/",
+    "appName": "managerhotel",
+    "appTitle": "My Hotel",
+    "appDescription": "Manage My Hotel",
+    "appNamespace": "hms.manager",
+    "ui5Theme": "sap_horizon",
+    "ui5Version": "1.150.0",
+    "enableEslint": true,
+    "showMockDataInfo": false,
+    "generatorVersion": "1.29.0",
+    "template": "List Report Page V4",
+    "generatorName": "SAP Fiori Application Generator",
+    "entityRelatedConfig": [
+      {
+        "type": "Main Entity",
+        "value": "Hotels"
+      },
+      {
+        "type": "Navigation Entity",
+        "value": "None"
+      }
+    ],
+    "launchText": "To launch the generated app, start your CAP project:  (```mvn spring-boot:run```) and navigate to the following location in your browser:\n\nhttp://localhost:8080/managerhotel/webapp/index.html"
+  }
+}
