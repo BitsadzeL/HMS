@@ -72,14 +72,14 @@ public class AdminServiceHandler implements EventHandler {
         }
     }
 
-    @Before(event = CqnService.EVENT_DELETE, entity = Managers_.CDS_NAME)
-    public void beforeDeleteManager(CdsDeleteEventContext context) {
-        Managers manager = db.run(Select.from(context.getCqn().ref()))
-                .listOf(Managers.class)
-                .stream().findFirst().orElse(null);
-
-        if (manager != null) {
-            managerValidator.assertDeletable(manager);
-        }
-    }
+//    @Before(event = CqnService.EVENT_DELETE, entity = Managers_.CDS_NAME)
+//    public void beforeDeleteManager(CdsDeleteEventContext context) {
+//        Managers manager = db.run(Select.from(context.getCqn().ref()))
+//                .listOf(Managers.class)
+//                .stream().findFirst().orElse(null);
+//
+//        if (manager != null) {
+//            managerValidator.assertDeletable(manager);
+//        }
+//    }
 }
