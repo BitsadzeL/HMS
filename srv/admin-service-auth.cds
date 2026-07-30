@@ -1,3 +1,3 @@
 using { AdminService }   from './admin-service';
 
-// annotate AdminService   with @requires: 'admin_access';
+annotate AdminService   with @requires: 'admin_access';

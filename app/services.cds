@@ -10,3 +10,7 @@ using from './adminmanagers/annotations';
 using from './adminreservations/annotations';
 
 using from './managerhotel/annotations';
+
+using from './managerrooms/annotations';
+
+using from './managerreservations/annotations';

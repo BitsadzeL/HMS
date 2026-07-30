@@ -11,6 +11,9 @@
     { "name": "$XSAPPNAME.manager_access", "description": "Hotel manager access" },
     { "name": "$XSAPPNAME.guest_access",   "description": "Guest access" }
   ],
+  "attributes": [
+    { "name": "hotelID", "description": "Hotel assigned to this manager", "valueType": "string" }
+  ],
   "role-templates": [
     {
       "name": "Admin",
@@ -20,7 +23,8 @@
     {
       "name": "Manager",
       "description": "Hotel manager",
-      "scope-references": [ "$XSAPPNAME.manager_access" ]
+      "scope-references": [ "$XSAPPNAME.manager_access" ],
+      "attribute-references": [ "hotelID" ]
     },
     {
       "name": "Guest",

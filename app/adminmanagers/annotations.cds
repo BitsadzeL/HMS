@@ -30,6 +30,11 @@ annotate service.Managers with @(
             },
             {
                 $Type : 'UI.DataField',
+                Label : 'Login Name',
+                Value : loginName,
+            },
+            {
+                $Type : 'UI.DataField',
                 Label : 'Hotel',
                 Value : hotel_ID,
             },
@@ -71,9 +76,13 @@ annotate service.Managers with @(
         },
         {
             $Type : 'UI.DataField',
+            Label : 'Login Name',
+            Value : loginName,
+        },
+        {
+            $Type : 'UI.DataField',
             Label : 'Hotel',
             Value : hotel_ID,
         },
     ],
 );
-
