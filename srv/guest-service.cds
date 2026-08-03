@@ -8,6 +8,9 @@ service GuestService {
   entity Guests as projection on db.Guests;
 
   @odata.draft.enabled
+  @restrict: [
+    { grant: ['READ','CREATE','UPDATE','cancel'], to: 'guest_access', where: 'exists guest[loginName = $user] and status = ''active''' }
+  ]
   entity Reservations as projection on db.Reservations actions {
     action cancel();
   };
