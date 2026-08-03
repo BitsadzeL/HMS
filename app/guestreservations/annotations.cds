@@ -1,4 +1,12 @@
 using GuestService as service from '../../srv/guest-service';
+
+annotate service.Reservations with {
+    room @(
+        Common.Text            : room.name,
+        Common.TextArrangement : #TextFirst
+    );
+};
+
 annotate service.Reservations with @(
     UI.FieldGroup #GeneratedGroup : {
         $Type : 'UI.FieldGroupType',

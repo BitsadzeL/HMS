@@ -1,4 +1,17 @@
 using AdminService as service from '../../srv/admin-service';
+
+annotate service.Reservations with {
+    room @(
+        Common.Text            : room.name,
+        Common.TextArrangement : #TextFirst
+    );
+
+    guest @(
+        Common.Text            : room.name,
+        Common.TextArrangement : #TextFirst
+    );
+};
+
 annotate service.Reservations with @(
     UI.FieldGroup #GeneratedGroup : {
         $Type : 'UI.FieldGroupType',
