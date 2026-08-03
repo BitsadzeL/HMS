@@ -45,6 +45,12 @@ annotate service.Reservations with @(
             Label : 'Room',
             Value : room_ID,
         },
+        {
+            $Type : 'UI.DataFieldForAction',
+            Action : 'GuestService.cancel',
+            Label  : 'Cancel'
+        }
     ],
+
 );
 
