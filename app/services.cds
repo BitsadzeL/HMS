@@ -14,3 +14,7 @@ using from './managerhotel/annotations';
 using from './managerrooms/annotations';
 
 using from './managerreservations/annotations';
+
+using from './managerguests/annotations';
+
+using from './guestreservations/annotations';
