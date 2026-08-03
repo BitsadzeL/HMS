@@ -13,7 +13,7 @@ service ManagerService {
 //   ]
   entity Rooms as projection on db.Rooms;
 
-  @readonly
+  @odata.draft.enabled
   entity Guests as projection on db.Guests;
 
   @odata.draft.enabled
