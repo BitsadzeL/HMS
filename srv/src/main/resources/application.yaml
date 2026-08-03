@@ -25,3 +25,7 @@ cds:
           password: guest
           roles:
             - guest_access
+        - name: guest2
+          password: guest2
+          roles:
+            - guest_access
