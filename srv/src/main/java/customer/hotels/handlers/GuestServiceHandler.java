@@ -87,7 +87,7 @@ public class GuestServiceHandler implements EventHandler {
     @Before(event = CqnService.EVENT_UPDATE, entity = Reservations_.CDS_NAME)
     public void beforeUpdateReservation(List<Reservations> reservations) {
         for (Reservations res : reservations) {
-            reservationValidator.assertOnlyDatesChanged(res.getRoomId(), res.getGuestId(), res.getStatus());
+            //reservationValidator.assertOnlyDatesChanged(res.getRoomId(), res.getGuestId(), res.getStatus());
 
             cds.gen.hms.Reservations existing = reservationsDAO.findById(res.getId()).orElse(null);
             if (existing == null) continue;
