@@ -9,7 +9,7 @@ service GuestService {
 
   @odata.draft.enabled
   @restrict: [
-    { grant: ['READ','CREATE','UPDATE','cancel'], to: 'guest_access', where: 'exists guest[loginName = $user] and status = ''active''' }
+    { grant: ['READ','CREATE','UPDATE','cancel'], to: 'guest_access', where: 'exists guest[loginName = $user]' }
   ]
   entity Reservations as projection on db.Reservations actions {
     action cancel();
