@@ -7,7 +7,7 @@ annotate service.Reservations with {
     );
 
     guest @(
-        Common.Text            : room.name,
+        Common.Text            : guest.name,
         Common.TextArrangement : #TextFirst
     );
 };
