@@ -6,7 +6,8 @@ import cds.gen.guestservice.Guests_;
 import cds.gen.guestservice.Reservations;
 import cds.gen.guestservice.ReservationsCancelContext;
 import cds.gen.guestservice.Reservations_;
-
+import com.sap.cds.services.cds.CdsCreateEventContext;
+import com.sap.cds.services.request.UserInfo;
 import cds.gen.hms.ReservationStatus;
 
 import customer.hotels.dao.ReservationsDAO;
@@ -29,6 +30,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
+
 @Component
 @ServiceName(GuestService_.CDS_NAME)
 @RequiredArgsConstructor
@@ -63,10 +66,28 @@ public class GuestServiceHandler implements EventHandler {
         }
     }
 
+
+    @Before(event = CqnService.EVENT_CREATE, entity = Reservations_.CDS_NAME)
+    public void setGuestOnCreate(CdsCreateEventContext context) {
+        UserInfo userInfo = context.getUserInfo();
+        String loginName = userInfo.getName();
+
+        List<Guests> guests = db.run(
+                Select.from(Guests_.class).where(g -> g.loginName().eq(loginName))
+        ).listOf(Guests.class);
+
+        Optional<Guests> guest = guests.stream().findFirst();
+
+        guest.ifPresent(g -> {
+            String guestId = g.getId();
+            context.getCqn().entries().forEach(entry -> entry.put("guest_ID", guestId));
+        });
+    }
+
     @Before(event = CqnService.EVENT_UPDATE, entity = Reservations_.CDS_NAME)
     public void beforeUpdateReservation(List<Reservations> reservations) {
         for (Reservations res : reservations) {
-            reservationValidator.assertOnlyDatesChanged(res.getRoomId(), res.getGuestId(), res.getStatus());
+            //reservationValidator.assertOnlyDatesChanged(res.getRoomId(), res.getGuestId(), res.getStatus());
 
             cds.gen.hms.Reservations existing = reservationsDAO.findById(res.getId()).orElse(null);
             if (existing == null) continue;

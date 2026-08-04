@@ -9,4 +9,6 @@ entity Managers : cuid, managed {
   personalNumber : String(30) @assert.unique;
   phoneNumber    : String(30) @assert.unique;
   hotel          : Association to Hotels @mandatory;
+
+  loginName      : String(60) @assert.unique;
 }

@@ -3,5 +3,22 @@
   "version": "1.0.0",
   "devDependencies": {
     "@sap/cds-dk": "^9.7.2"
-  }
+  },
+  "sapux": [
+    "app/managehotels",
+    "app/managerooms",
+    "app/managemanagers",
+    "app/manageguests",
+    "app/managereservations",
+    "app/adminguests",
+    "app/adminhotels",
+    "app/adminrooms",
+    "app/adminmanagers",
+    "app/adminreservations",
+    "app/managerhotel",
+    "app/managerrooms",
+    "app/managerreservations",
+    "app/managerguests",
+    "app/guestreservations"
+  ]
 }

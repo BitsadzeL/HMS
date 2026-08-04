@@ -1,0 +1,27 @@
+{
+  "generationParameters": {
+    "generationDate": "Mon Aug 03 2026 14:23:36 GMT+0400 (Georgia Standard Time)",
+    "generatorPlatform": "CLI",
+    "serviceType": "Local CAP",
+    "metadataFilename": "",
+    "serviceUrl": "http://localhost:4004/odata/v4/GuestService/",
+    "appName": "guestreservations",
+    "appTitle": "My Reservations",
+    "appDescription": "manage reservations",
+    "appNamespace": "hms.guest",
+    "ui5Theme": "sap_horizon",
+    "ui5Version": "1.150.1",
+    "enableEslint": true,
+    "showMockDataInfo": false,
+    "generatorVersion": "1.29.0",
+    "template": "List Report Page V4",
+    "generatorName": "SAP Fiori Application Generator",
+    "entityRelatedConfig": [
+      {
+        "type": "Main Entity",
+        "value": "Reservations"
+      }
+    ],
+    "launchText": "To launch the generated app, start your CAP project:  (```mvn spring-boot:run```) and navigate to the following location in your browser:\n\nhttp://localhost:8080/guestreservations/webapp/index.html"
+  }
+}
